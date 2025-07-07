@@ -9,12 +9,17 @@ type Post = {
   content: string;
 };
 
+export enum FormMode {
+  CREATE = 'create',
+  EDIT = 'edit',
+}
+
 interface PostFormModalProps {
-  readonly mode: 'create' | 'edit';
+  readonly mode: FormMode;
   readonly post?: Post;
 }
 
-const PostFormModal = ({  mode,  post }: PostFormModalProps) =>  {
+const PostFormModal = ({ mode, post }: PostFormModalProps) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(post?.title ?? '');
@@ -25,7 +30,7 @@ const PostFormModal = ({  mode,  post }: PostFormModalProps) =>  {
     e.preventDefault();
     setLoading(true);
 
-    if (mode === 'create') {
+    if (mode === FormMode.CREATE) {
       await fetch('/api/posts', {
         method: 'POST',
         body: JSON.stringify({ title, content }),
@@ -46,45 +51,76 @@ const PostFormModal = ({  mode,  post }: PostFormModalProps) =>  {
 
   return (
     <>
-      <button onClick={() => setOpen(true)}>
-        {mode === 'create' ? 'New Post' : 'Edit'}
+      <button
+        className={`btn ${mode === FormMode.CREATE ? 'btn-primary' : 'btn-secondary'}`}
+        onClick={() => {
+          setTitle('');
+          setContent('');
+          setOpen(true);
+        }}
+      >
+        {mode === FormMode.CREATE ? 'New Post' : 'Edit'}
       </button>
+      {mode === FormMode.EDIT && (
+        <button
+          className={'btn btn-danger ms-2'}
+          onClick={() => {
+            if (post?.id) {
+              fetch(`/api/posts/${post.id}`, {
+                method: 'DELETE',
+              }).then(() => {
+                router.refresh();
+              });
+            }
+          }}
+        >
+          Delete
+        </button>
+      )}
       {open && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.3)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <div style={{
-            background: '#fff',
-            padding: '1rem',
-            borderRadius: '4px',
-            width: '400px'
-          }}>
-            <h2>{mode === 'create' ? 'Create New Post' : 'Edit Post'}</h2>
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.3)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              background: '#fff',
+              padding: '1rem',
+              borderRadius: '4px',
+              width: '400px',
+            }}
+          >
+            <h2>{mode === FormMode.CREATE ? 'Create New Post' : 'Edit Post'}</h2>
             <form onSubmit={handleSubmit}>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Title"
+                placeholder={'Title'}
                 required
                 style={{ width: '100%' }}
-              /><br /><br />
+              />
+              <br />
+              <br />
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Content"
+                placeholder={'Content'}
                 required
                 style={{ width: '100%' }}
-              /><br /><br />
-              <button type="submit" disabled={loading}>
+              />
+              <br />
+              <br />
+              <button className={'btn btn-primary'} type={'submit'} disabled={loading}>
                 {loading ? 'Saving...' : 'Save'}
               </button>
               &nbsp;
-              <button type="button" onClick={() => setOpen(false)}>
+              <button className={'btn btn-secondary'} type={'button'} onClick={() => setOpen(false)}>
                 Cancel
               </button>
             </form>
@@ -93,10 +129,10 @@ const PostFormModal = ({  mode,  post }: PostFormModalProps) =>  {
       )}
     </>
   );
-}
+};
 
 const PostFormModalWrapper = (props: any) => {
   return <PostFormModal {...props} />;
-}
+};
 
 export default PostFormModalWrapper;

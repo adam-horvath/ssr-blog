@@ -24,6 +24,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+ul {
+  padding: 30px 0;
+  li {
+    list-style: none;
+  }
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
