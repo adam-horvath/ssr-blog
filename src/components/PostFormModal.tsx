@@ -52,7 +52,7 @@ const PostFormModal = ({ mode, post }: PostFormModalProps) => {
   return (
     <>
       <button
-        className={`btn ${mode === FormMode.CREATE ? 'btn-primary' : 'btn-secondary'}`}
+        className={`btn ${mode === FormMode.CREATE ? 'btn-primary' : 'btn-sm btn-outline-secondary'}`}
         onClick={() => {
           setTitle('');
           setContent('');
@@ -63,7 +63,7 @@ const PostFormModal = ({ mode, post }: PostFormModalProps) => {
       </button>
       {mode === FormMode.EDIT && (
         <button
-          className={'btn btn-danger ms-2'}
+          className={'btn btn-sm btn-outline-danger ms-2'}
           onClick={() => {
             if (post?.id) {
               fetch(`/api/posts/${post.id}`, {

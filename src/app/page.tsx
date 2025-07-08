@@ -18,8 +18,9 @@ export default async function HomePage() {
       <ul>
         {posts.map((post: any) => (
           <li key={post.id} className={classes.PostContainer}>
-            <Link href={`/posts/${post.id}`}>{post.title}</Link>
-            &nbsp;
+            <div className={'py-2'}>
+              <Link href={`/posts/${post.id}`}>{post.title}</Link>
+            </div>
             <PostFormModal mode={'edit'} post={post} />
           </li>
         ))}

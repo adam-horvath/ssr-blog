@@ -1,9 +1,5 @@
 .PostContainer {
-  display: flex;
-  align-items: center;
+  display: block;
   margin: 10px 0;
   width: 100%;
-  a {
-    flex-grow: 1;
-  }
 }
